@@ -43,7 +43,7 @@ func handleTeamGet(w http.ResponseWriter, r *http.Request, repos *repo.SQLRepo) 
 
 func handleTeamAdd(w http.ResponseWriter, r *http.Request, repos *repo.SQLRepo) {
 	var in struct {
-		TeamName string               `json:"team_name"`
+		TeamName string                  `json:"team_name"`
 		Members  []models.TeamMemberResp `json:"members"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {

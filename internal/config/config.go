@@ -15,7 +15,7 @@ func LoadFromEnv() Config {
 	if dsn == "" {
 		user := getenv("POSTGRES_USER", "pruser")
 		pass := getenv("POSTGRES_PASSWORD", "prpass")
-		host := getenv("DB_HOST", "db")  // Docker-сервис
+		host := getenv("DB_HOST", "db")
 		port := getenv("DB_PORT", "5432")
 		db := getenv("POSTGRES_DB", "pr_review")
 		dsn = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", user, pass, host, port, db)

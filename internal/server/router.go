@@ -7,17 +7,17 @@ import (
 )
 
 type RouterHolder struct {
-    Router *mux.Router
+	Router *mux.Router
 }
 
 func (r *RouterHolder) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-    r.Router.ServeHTTP(w, req)
+	r.Router.ServeHTTP(w, req)
 }
 
 func (r *RouterHolder) Mux() *mux.Router {
-    return r.Router
+	return r.Router
 }
 
 func NewRouter() *RouterHolder {
-    return &RouterHolder{Router: mux.NewRouter()}
+	return &RouterHolder{Router: mux.NewRouter()}
 }

@@ -72,7 +72,6 @@ func (r *SQLRepo) CreateTeam(teamName string, members []models.TeamMemberResp) (
 	}
 	defer func() { _ = tx.Rollback() }()
 
-
 	var exists bool
 	if err := tx.Get(&exists, "SELECT EXISTS(SELECT 1 FROM teams WHERE name=$1)", teamName); err != nil {
 		return nil, err
@@ -122,7 +121,6 @@ func (r *SQLRepo) SetUserActive(userID string, isActive bool) (*models.UserResp,
 		return nil, err
 	}
 	defer func() { _ = tx.Rollback() }()
-
 
 	var exists bool
 	if err := tx.Get(&exists, "SELECT EXISTS(SELECT 1 FROM users WHERE id=$1)", userID); err != nil {
@@ -203,21 +201,20 @@ func (r *SQLRepo) InsertPRTx(tx *sqlx.Tx, prID, title, authorID, team string, cr
 	return err
 }
 
-
 func (r *SQLRepo) GetPR(prID string) (*models.PullRequestResp, error) {
-    var pr models.PullRequestResp
-    err := r.DB.Get(&pr, "SELECT id, title, author_id, team_name, status FROM prs WHERE id=$1", prID)
-    if err != nil {
-        return nil, err
-    }
+	var pr models.PullRequestResp
+	err := r.DB.Get(&pr, "SELECT id, title, author_id, team_name, status FROM prs WHERE id=$1", prID)
+	if err != nil {
+		return nil, err
+	}
 
-    var reviewers []string
-    err = r.DB.Select(&reviewers, "SELECT user_id FROM pr_reviewers WHERE pr_id=$1", prID)
-    if err != nil {
-        return nil, err
-    }
-    pr.AssignedReviewers = reviewers
-    return &pr, nil
+	var reviewers []string
+	err = r.DB.Select(&reviewers, "SELECT user_id FROM pr_reviewers WHERE pr_id=$1", prID)
+	if err != nil {
+		return nil, err
+	}
+	pr.AssignedReviewers = reviewers
+	return &pr, nil
 }
 
 func (r *SQLRepo) SelectActiveReviewersTx(tx *sqlx.Tx, teamName, authorID string) ([]string, error) {
@@ -237,9 +234,9 @@ func (r *SQLRepo) SetUserIsActive(userID string, isActive bool) error {
 }
 
 func (r *SQLRepo) GetPRsForUser(userID string) ([]*models.PullRequestShortResp, error) {
-    var prsVals []models.PullRequestShortResp
+	var prsVals []models.PullRequestShortResp
 
-    query := `
+	query := `
         SELECT pr.id AS pull_request_id,
                pr.title AS pull_request_name,
                pr.author_id AS author_id,
@@ -249,16 +246,15 @@ func (r *SQLRepo) GetPRsForUser(userID string) ([]*models.PullRequestShortResp, 
         WHERE rr.user_id = $1
     `
 
-    if err := r.DB.Select(&prsVals, query, userID); err != nil {
-        return nil, fmt.Errorf("GetPRsForUser: select query failed (user=%s): %w", userID, err)
-    }
+	if err := r.DB.Select(&prsVals, query, userID); err != nil {
+		return nil, fmt.Errorf("GetPRsForUser: select query failed (user=%s): %w", userID, err)
+	}
 
-    prs := make([]*models.PullRequestShortResp, 0, len(prsVals))
-    for i := range prsVals {
-        p := prsVals[i]
-        prs = append(prs, &p)
-    }
+	prs := make([]*models.PullRequestShortResp, 0, len(prsVals))
+	for i := range prsVals {
+		p := prsVals[i]
+		prs = append(prs, &p)
+	}
 
-    return prs, nil
+	return prs, nil
 }
-

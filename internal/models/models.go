@@ -28,8 +28,8 @@ type PullRequestResp struct {
 }
 
 type PullRequestShortResp struct {
-    PullRequestID   string `db:"pull_request_id" json:"pull_request_id"`
-    PullRequestName string `db:"pull_request_name" json:"pull_request_name"`
-    AuthorID        string `db:"author_id" json:"author_id"`
-    Status          string `db:"status" json:"status"`
+	PullRequestID   string `db:"pull_request_id" json:"pull_request_id"`
+	PullRequestName string `db:"pull_request_name" json:"pull_request_name"`
+	AuthorID        string `db:"author_id" json:"author_id"`
+	Status          string `db:"status" json:"status"`
 }

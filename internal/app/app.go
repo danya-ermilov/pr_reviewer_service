@@ -22,33 +22,34 @@ type App struct {
 	Repos  *repo.SQLRepo
 	Svcs   *services.Services
 }
+
 func NewApp(cfg config.Config, logger *log.Logger) (*App, error) {
-    db, err := sqlx.Connect("postgres", cfg.DatabaseURL)
-    if err != nil {
-        return nil, err
-    }
+	db, err := sqlx.Connect("postgres", cfg.DatabaseURL)
+	if err != nil {
+		return nil, err
+	}
 
-    if err := repo.RunMigrations(db); err != nil {
-        panic(fmt.Sprintf("migration failed: %v", err))
-    }
+	if err := repo.RunMigrations(db); err != nil {
+		panic(fmt.Sprintf("migration failed: %v", err))
+	}
 
-    repos := repo.NewSQLRepo(db)
-    svcs := services.NewServices(repos)
-    router := server.NewRouter()
+	repos := repo.NewSQLRepo(db)
+	svcs := services.NewServices(repos)
+	router := server.NewRouter()
 
-    handlers.RegisterTeamRoutes(router.Mux(), repos, svcs)
-    handlers.RegisterUserRoutes(router.Mux(), repos, svcs)
-    handlers.RegisterPRRoutes(router.Mux(), repos, svcs)
+	handlers.RegisterTeamRoutes(router.Mux(), repos, svcs)
+	handlers.RegisterUserRoutes(router.Mux(), repos, svcs)
+	handlers.RegisterPRRoutes(router.Mux(), repos, svcs)
 
-    router.Mux().PathPrefix("/docs/").Handler(
-        http.StripPrefix("/docs/", http.FileServer(http.Dir("/app/swagger-ui"))),
-    )
+	router.Mux().PathPrefix("/docs/").Handler(
+		http.StripPrefix("/docs/", http.FileServer(http.Dir("/app/swagger-ui"))),
+	)
 
-    return &App{
-        DB:     db,
-        Router: router,
-        Logger: logger,
-        Repos:  repos,
-        Svcs:   svcs,
-    }, nil
+	return &App{
+		DB:     db,
+		Router: router,
+		Logger: logger,
+		Repos:  repos,
+		Svcs:   svcs,
+	}, nil
 }

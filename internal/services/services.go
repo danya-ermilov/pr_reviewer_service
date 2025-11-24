@@ -18,7 +18,7 @@ type Services struct {
 var rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 func NewServices(r *repo.SQLRepo) *Services {
-    return &Services{PR: &PRService{repo: r}}
+	return &Services{PR: &PRService{repo: r}}
 }
 
 type PRService struct {
@@ -83,7 +83,7 @@ func (s *PRService) CreatePR(prID, title, authorID string) (map[string]interface
 	if err := tx.Commit(); err != nil {
 		return nil, err
 	}
-	
+
 	prModel, _ := s.repo.GetPR(prID)
 	pr := map[string]interface{}{
 		"id":                 prModel.PullRequestID,
@@ -97,46 +97,45 @@ func (s *PRService) CreatePR(prID, title, authorID string) (map[string]interface
 }
 
 func (s *PRService) MergePR(prID string) (map[string]interface{}, error) {
-    tx, err := s.repo.Beginx()
-    if err != nil {
-        return nil, err
-    }
-    defer func() { _ = tx.Rollback() }()
+	tx, err := s.repo.Beginx()
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = tx.Rollback() }()
 
-    var status string
-    if err := tx.Get(&status, "SELECT status FROM prs WHERE id=$1 FOR UPDATE", prID); err != nil {
-        if errors.Is(err, sql.ErrNoRows) {
-            return nil, fmt.Errorf("PR not found")
-        }
-        return nil, err
-    }
+	var status string
+	if err := tx.Get(&status, "SELECT status FROM prs WHERE id=$1 FOR UPDATE", prID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("PR not found")
+		}
+		return nil, err
+	}
 
-    if status != "MERGED" {
-        if _, err := tx.Exec("UPDATE prs SET status='MERGED' WHERE id=$1", prID); err != nil {
-            return nil, err
-        }
-    }
+	if status != "MERGED" {
+		if _, err := tx.Exec("UPDATE prs SET status='MERGED' WHERE id=$1", prID); err != nil {
+			return nil, err
+		}
+	}
 
-    if err := tx.Commit(); err != nil {
-        return nil, err
-    }
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
 
-    prModel, err := s.repo.GetPR(prID)
-    if err != nil {
-        return nil, err
-    }
+	prModel, err := s.repo.GetPR(prID)
+	if err != nil {
+		return nil, err
+	}
 
-    pr := map[string]interface{}{
-        "id":       prModel.PullRequestID,
-        "title":    prModel.PullRequestName,
-        "author":   prModel.AuthorID,
-        "status":   prModel.Status,
-        "reviewers": prModel.AssignedReviewers,
-    }
+	pr := map[string]interface{}{
+		"id":        prModel.PullRequestID,
+		"title":     prModel.PullRequestName,
+		"author":    prModel.AuthorID,
+		"status":    prModel.Status,
+		"reviewers": prModel.AssignedReviewers,
+	}
 
-    return pr, nil
+	return pr, nil
 }
-
 
 func (s *PRService) Reassign(prID, oldUser string) (string, map[string]interface{}, error) {
 	tx, err := s.repo.Beginx()

@@ -52,17 +52,17 @@ func handleSetIsActive(w http.ResponseWriter, r *http.Request, repos *repo.SQLRe
 
 func handleGetReview(w http.ResponseWriter, r *http.Request, repos *repo.SQLRepo) {
 	userID := r.URL.Query().Get("user_id")
-    if userID == "" {
-        http.Error(w, "user_id required", http.StatusBadRequest)
-        return
-    }
+	if userID == "" {
+		http.Error(w, "user_id required", http.StatusBadRequest)
+		return
+	}
 
-    prs, err := repos.GetPRsForUser(userID)
-    if err != nil {
-        log.Printf("GetPRsForUser error for user=%q: %v", userID, err)
-        http.Error(w, fmt.Sprintf("failed to fetch PRs: %v", err), http.StatusInternalServerError)
-        return
-    }
+	prs, err := repos.GetPRsForUser(userID)
+	if err != nil {
+		log.Printf("GetPRsForUser error for user=%q: %v", userID, err)
+		http.Error(w, fmt.Sprintf("failed to fetch PRs: %v", err), http.StatusInternalServerError)
+		return
+	}
 
 	var resp []models.PullRequestShortResp
 	for _, pr := range prs {
