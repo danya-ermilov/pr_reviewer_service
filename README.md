@@ -9,7 +9,6 @@
 Требования:
 - Docker Desktop / Docker Engine
 - (в WSL) включена интеграция WSL в Docker Desktop или запускать из Linux/macOS
-- `docker compose` (вместо `docker-compose`) — в Makefile используется `docker compose`
 
 Запуск:
 
@@ -44,8 +43,8 @@ make lint           # запуск линтера (golangci-lint)
 make docker-build   # сборка Docker image
 make docker-up      # поднять сервис (docker compose up -d --build)
 make docker-down    # остановить и очистить (docker compose down -v)
-make run            # локальный запуск (нужна локальная Postgres)
-make migrate        # локовое применение миграций
+make run            # локальный запуск
+make migrate        # применение миграций
 ```
 
 ## Структура проекта
