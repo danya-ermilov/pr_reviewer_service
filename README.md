@@ -14,10 +14,10 @@
 Запуск:
 
 ```bash
-# 1) Сброс старых контейнеров/томов (рекомендуется при первой сборке)
+# 1) Сброс старых контейнеров/томов
 docker compose down -v
 
-# 2) Поднять стек (Postgres + приложение)
+# 2) Поднять стек
 docker compose up -d --build
 ```
 
@@ -28,7 +28,7 @@ http://localhost:8080
 
 Swagger UI:
 ```
-http://localhost:8080/docs/
+http://localhost:8080/docs/#/
 ```
 
 Миграции применяются автоматически — запуском управляет entrypoint.sh.

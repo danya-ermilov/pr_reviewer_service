@@ -41,10 +41,10 @@ docker-logs:
 clean:
 	-rm -f $(BINARY)
 
-# запуск миграций (локально, если бинарь умеет migrate)
+# запуск миграций
 migrate:
 	./$(BINARY) migrate
 
-# локальный запуск (использует переменные окружения)
+# локальный запуск
 run:
 	DATABASE_URL=$${DATABASE_URL:-postgres://pruser:prpass@localhost:5432/pr_review?sslmode=disable} PORT=$${PORT:-8080} ./$(BINARY)
